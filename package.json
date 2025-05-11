@@ -7,7 +7,9 @@
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "db:check": "node src/dbCheck.js",
-    "test": "cross-env NODE_ENV=test jest --runInBand --detectOpenHandles"
+    "test": "cross-env NODE_ENV=test jest --runInBand --detectOpenHandles",
+    "migrate:dev": "cross-env NODE_ENV=development node scripts/run-migration.js 001_init_schema.sql",
+    "migrate:test": "cross-env NODE_ENV=test node scripts/run-migration.js 001_init_schema.sql"
   },
   "keywords": [],
   "author": "",

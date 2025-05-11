@@ -5,3 +5,9 @@ coverage/
 .DS_Store
 npm-debug.log*
 EOF
+
+# add scripts here
+scripts/
+
+#migrations
+migrations/
