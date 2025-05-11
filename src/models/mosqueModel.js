@@ -5,7 +5,47 @@ import { query } from '../config/dbConfig.js';
 const TABLE = 'mosques';
 
 export default class MosqueModel {
-  /**
+  // /**
+  //  * Create a new mosque record (status defaults to under_review).
+  //  * @param {Object} data
+  //  * @param {string} data.name
+  //  * @param {string} data.address_line
+  //  * @param {string} data.city
+  //  * @param {string} [data.state]
+  //  * @param {string} data.country
+  //  * @param {string} [data.postal_code]
+  //  * @param {string} [data.location_type]
+  //  * @param {number} data.latitude
+  //  * @param {number} data.longitude
+  //  * @param {string} data.created_by_admin
+  //  */
+  // static async create(data) {
+  //   const text = `
+  //     INSERT INTO ${TABLE}
+  //       (name, address_line, city, state, country, postal_code,
+  //        location_type, latitude, longitude, created_by_admin)
+  //     VALUES
+  //       ($1, $2, $3, $4, $5, $6,
+  //        $7, $8, $9, $10)
+  //     RETURNING *
+  //   `;
+  //   const values = [
+  //     data.name,
+  //     data.address_line,
+  //     data.city,
+  //     data.state || null,
+  //     data.country,
+  //     data.postal_code || null,
+  //     data.location_type || null,
+  //     data.latitude,
+  //     data.longitude,
+  //     data.created_by_admin,
+  //   ];
+  //   const { rows } = await query(text, values);
+  //   return rows[0];
+  // }
+
+   /**
    * Create a new mosque record (status defaults to under_review).
    * @param {Object} data
    * @param {string} data.name
@@ -22,21 +62,28 @@ export default class MosqueModel {
   static async create(data) {
     const text = `
       INSERT INTO ${TABLE}
-        (name, address_line, city, state, country, postal_code,
-         location_type, latitude, longitude, created_by_admin)
+        (name,
+         address_line,
+         city,
+         state,
+         country,
+         postal_code,
+         location_type,
+         latitude,
+         longitude,
+         created_by_admin)
       VALUES
-        ($1, $2, $3, $4, $5, $6,
-         $7, $8, $9, $10)
-      RETURNING *
+        ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      RETURNING *;
     `;
     const values = [
       data.name,
       data.address_line,
       data.city,
-      data.state || null,
+      data.state  || null,
       data.country,
-      data.postal_code || null,
-      data.location_type || null,
+      data.postal_code  || null,
+      data.location_type|| null,
       data.latitude,
       data.longitude,
       data.created_by_admin,

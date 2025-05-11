@@ -122,3 +122,37 @@ export async function getFullMosqueDetails(req, res, next) {
     next(err);
   }
 }
+
+
+export async function getMosqueProfile(req, res, next) {
+  try {
+    const { mosque, profile } = await fetchDashboardData(req.adminId);
+    res.json({ profile });
+  } catch (e) { next(e) }
+}
+
+export async function getMosquePrayerTimings(req, res, next) {
+  try {
+    const { prayerTimings } = await fetchDashboardData(req.adminId);
+    res.json({ prayerTimings });
+  } catch (e) { next(e) }
+}
+
+
+async function fetchDashboardData(adminId) {
+  const mosque = await mosqueService.findByAdminId(adminId);
+  if (!mosque) throw { statusCode: 404, message: 'No mosque found' };
+
+  const facilities = await facilityModel.findByMosqueId(mosque.id);
+  const prayerTimings = await prayerService.getPrayerTimings(mosque.id);
+
+  return {
+    mosque,
+    profile: {
+      description: mosque.description,
+      contact_phone: mosque.contact_phone,
+      facilities
+    },
+    prayerTimings
+  };
+}
