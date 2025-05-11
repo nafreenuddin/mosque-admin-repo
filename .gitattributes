@@ -1,0 +1,8 @@
+# Auto-normalize all text files:
+* text=auto
+
+# Force .js and .json files to LF in the repo:
+*.js    text eol=lf
+*.json  text eol=lf
+
+# (You can add other extensions as you like, e.g. *.ts, *.jsx, etc.)
