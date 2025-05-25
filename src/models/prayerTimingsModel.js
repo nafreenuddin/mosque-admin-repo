@@ -146,7 +146,9 @@
 //     return rows[0] || null;
 //   }
 // }
-import { query } from '../config/dbConfig.js';
+// import { query } from '../config/dbConfig.js';
+
+import { query } from '../services/dbServices.js';
 
 const TABLE = 'prayer_timings';
 

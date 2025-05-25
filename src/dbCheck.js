@@ -1,17 +1,26 @@
-import dotenv from 'dotenv';
-import { connectDB, closeDB } from './config/dbConfig.js';
+#!/usr/bin/env node
+// src/dbCheck.js
 
+import dotenv from 'dotenv';
 dotenv.config();
 
-(async () => {
+import { query, closeDB } from './services/dbServices.js';
+import { env }             from './config/db.js';
+
+;(async () => {
   console.log('🔍 Checking DB connection...');
   try {
-    await connectDB();
-    console.log('✅ DB connection OK');
+    await query('SELECT 1');
+    console.log(`✅ Connected to PostgreSQL (${env})`);
   } catch (err) {
-    console.error('❌ DB connection failed:', err);
+    console.error('❌ Failed to connect to PostgreSQL:', err);
     process.exit(1);
   } finally {
-    await closeDB();
+    try {
+      await closeDB();
+    } catch (closeErr) {
+      console.error('❌ Error closing DB connection:', closeErr);
+      process.exit(1);
+    }
   }
 })();

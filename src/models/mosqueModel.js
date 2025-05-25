@@ -1,6 +1,8 @@
 // src/models/mosqueModel.js
 
-import { query } from '../config/dbConfig.js';
+// import { query } from '../config/dbConfig.js';
+
+import { query } from '../services/dbServices.js';
 
 const TABLE = 'mosques';
 
@@ -200,5 +202,34 @@ static async markFullyApproved(id) {
   const { rows } = await query(text, [id]);
   return rows[0];
 }
+
+// exact match
+static async findByAddress(address, city, country) {
+  const text = `
+    SELECT id
+    FROM mosques
+    WHERE address_line = $1
+      AND city         = $2
+      AND country      = $3
+    LIMIT 1`;
+  const { rows } = await query(text, [address, city, country]);
+  return rows[0] || null;
+}
+
+// // geospatial (PostGIS / earthdistance)
+// static async findByProximity(lat, lng, km) {
+//   const meters = km * 1000;
+//   const text = `
+//     SELECT id
+//     FROM mosques
+//     WHERE earth_distance(
+//       ll_to_earth(latitude, longitude),
+//       ll_to_earth($1, $2)
+//     ) < $3
+//     LIMIT 1`;
+//   const { rows } = await query(text, [lat, lng, meters]);
+//   return rows[0] || null;
+// }
+
 }
 

@@ -13,14 +13,17 @@ export async function createMosque(req, res, next) {
     if (existing) {
       return res.status(400).json({ error: 'Admin already owns a mosque' });
     }
+
+   
     const data = req.body;
     // Required fields check
-    const required = ['name', 'address_line', 'city', 'country', 'latitude', 'longitude'];
+    const required = ['name', 'address_line', 'city', 'country', 'latitude', 'longitude','postal_code'];
     for (const field of required) {
       if (data[field] === undefined) {
         return res.status(400).json({ error: `${field} is required` });
       }
     }
+     await mosqueService.throwIfDuplicate(data);
     const mosque = await mosqueService.createMosque(adminId, data);
     res.status(201).json({ mosque });
   } catch (err) {
@@ -32,15 +35,6 @@ export async function createMosque(req, res, next) {
  * GET /api/mosques
  * Public. List all mosques (basic fields only).
  */
-// export async function listMosques(req, res, next) {
-//   try {
-//     // For now, list all. Pagination/filtering can be added later.
-//     const mosques = await mosqueService.listAll(); 
-//     res.json({ mosques });
-//   } catch (err) {
-//     next(err);
-//   }
-// }
 export async function listMosques(req, res, next) {
     try {
       const mosques = await mosqueService.listAll();

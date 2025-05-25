@@ -1,6 +1,8 @@
 // src/models/facilityModel.js
 
-import { query } from '../config/dbConfig.js';
+// import { query } from '../config/dbConfig.js';
+
+import { query } from '../services/dbServices.js';
 
 const FACILITIES_TABLE = 'facilities';
 const JOIN_TABLE = 'mosque_facilities';

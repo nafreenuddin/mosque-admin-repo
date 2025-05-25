@@ -119,6 +119,16 @@ class MosqueService {
     }
     return MosqueModel.updateStatus(mosqueId, status, review_notes);
   }
+
+  async throwIfDuplicate({ address_line, city, country, latitude, longitude }) {
+  // quick exact match
+  const dup = await mosqueModel.findByAddress(address_line, city, country);
+  if (dup) throw new Error('A mosque at that address already exists.');
+
+  // optional geospatial:
+  // const near = await mosqueModel.findByProximity(latitude, longitude, 0.05);
+  // if (near) throw new Error('A mosque already exists within 50 m of that location.');
+}
 }
 
 export default new MosqueService();

@@ -1,4 +1,6 @@
-import { query } from '../config/dbConfig.js';
+// import { query } from '../config/dbConfig.js';
+
+import { query } from '../services/dbServices.js';
 
 const TABLE = 'adminstable';
 
