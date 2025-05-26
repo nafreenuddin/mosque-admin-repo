@@ -1,14 +1,16 @@
+// src/routes/placesRoutes.js
+
 import express from 'express';
-import { getNearbyMosques } from '../controllers/placesController.js';
+import { getNearbyMosquesController } from '../controllers/placesController.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
-// e.g. GET /api/v1/places/nearby?lat=..&lng=..
+// Public or protected — here we require auth so only logged-in admins can call it:
 router.get(
   '/nearby',
   authMiddleware,
-  getNearbyMosques
+  getNearbyMosquesController
 );
 
 export default router;
