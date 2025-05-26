@@ -17,6 +17,7 @@ import {
   updateStatus, // ← your controller fn
 } from "../controllers/mosqueController.js";
 // import { updatePrayerTimings } from '../controllers/prayerController.js';
+import geoFence from "../middlewares/geoFence.js"; // Ensure this is imported
 
 const router = express.Router();
 
@@ -28,6 +29,7 @@ router.get("/:id", getMosqueById);
 router.post(
   "/",
   authMiddleware,
+   geoFence,
   validateMiddleware([
     { field: "name", required: true, type: "string" },
     { field: "address_line", required: true, type: "string" },

@@ -15,7 +15,8 @@ import authMiddleware from "./middlewares/authMiddleware.js";
 import errorHandlers from "./utils/errorHandlers.js";
 import setupMiddlewares from "./config/middlewares.js";
 import healthRoutes from "./config/healthRoutes.js";
-
+import rateLimit from 'express-rate-limit';
+import placesRoutes from "./routes/placesRoutes.js";
 // dotenv.config();
 const app = express();
 
@@ -37,9 +38,18 @@ setupMiddlewares(app);
 
 // --- Versioned /api/v1 Router ---
 const v1 = express.Router();
-
+const pinLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 3,
+  keyGenerator: (req) => req.body.mobile || req.ip,
+  handler: (_, res) =>
+    res.status(429).json({
+      error: 'Too many attempts—please try again later or reset your PIN.'
+    }),
+  skipSuccessfulRequests: true
+});
 // Auth (OTP + JWT)
-v1.use("/auth", authRoutes);
+v1.use("/auth", pinLimiter, authRoutes);
 
 // Admin-side mosque endpoints (full record + status)
 v1.use("/admin/mosque", adminMosqueRoutes);
@@ -59,6 +69,8 @@ app.use("/api", v1);
 
 // // --- Health Check ---
 v1.use("/", healthRoutes);
+
+v1.use('/places', placesRoutes);
 
 // // --- 404 Handler ---
 // app.use((req, res) => {

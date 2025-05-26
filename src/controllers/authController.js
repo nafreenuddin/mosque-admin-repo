@@ -78,6 +78,7 @@
 import AdminModel from '../models/adminModel.js';
 import adminService from '../services/adminService.js';
 import { hashPin, verifyPin } from '../utils/pinUtil.js';
+import otpService from '../services/otpService.js';
 
 /**
  * POST /api/v1/auth/register-admin
@@ -205,4 +206,30 @@ export async function verifyPinReset(req, res, next) {
   } catch (err) {
     next(err);
   }
+}
+
+
+
+export async function requestPinOtp(req, res, next) {
+  try {
+    const { mobile } = req.body;
+    // reuse your OTP logic
+    await otpService.sendPinResetOtp(mobile);
+    res.json({ success: true });
+  } catch (err) { next(err); }
+}
+
+export async function resetPin(req, res, next) {
+  try {
+    const { mobile, otp, pin } = req.body;
+    // 1) verify the OTP
+    const valid = await otpService.verifyPinResetOtp(mobile, otp);
+    if (!valid) {
+      return res.status(400).json({ error: 'Invalid or expired OTP' });
+    }
+    // 2) hash & save the new PIN
+    const pinHash = await hashPin(pin);
+    await adminService.updatePinHashByMobile(mobile, pinHash);
+    res.json({ success: true });
+  } catch (err) { next(err); }
 }

@@ -78,7 +78,8 @@ import {
   requestPinReset,
   verifyPinReset,
 } from "../controllers/authController.js";
-import { body } from 'express-validator';
+import { body } from "express-validator";
+import { requestPinOtp, resetPin } from "../controllers/authController.js";
 
 const router = express.Router();
 
@@ -168,4 +169,32 @@ router.post(
   ]),
   verifyPinReset
 );
+
+router.post(
+  "/forgot-pin",
+  [
+    body("mobile")
+      .matches(/^\+\d{7,15}$/)
+      .withMessage("Bad mobile"),
+  ],
+  validateMiddleware,
+  requestPinOtp
+);
+
+router.post(
+  "/reset-pin",
+  [
+    body("mobile").matches(/^\+\d{7,15}$/),
+    body("otp").isLength({ min: 4, max: 6 }),
+    body("pin")
+      .isLength({ min: 4, max: 4 })
+      .withMessage("PIN must be 4 digits"),
+    body("pinConfirm")
+      .custom((v, { req }) => v === req.body.pin)
+      .withMessage("PIN confirmation mismatch"),
+  ],
+  validateMiddleware,
+  resetPin
+);
+
 export default router;
